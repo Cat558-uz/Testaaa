@@ -1237,15 +1237,29 @@ AddEle("Button", function(parent, props, ...)
 		New.BackgroundTransparency = 0
 	end)
 
+	local clickTween -- referencia para tween ativo
+	local restoreTween
+
 	-- Função para animação de clique
 	local function ClickAnimation()
+		if clickTween then clickTween:Cancel() end
+		if restoreTween then restoreTween:Cancel() end
+
 		local originalSize = New.Size
-		local shrink = TweenService:Create(New, TweenInfo.new(0.1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.new(originalSize.X.Scale * 0.9, originalSize.X.Offset * 0.9, originalSize.Y.Scale * 0.9, originalSize.Y.Offset * 0.9)})
-		local restore = TweenService:Create(New, TweenInfo.new(0.1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = originalSize})
-		
+		local shrink = TweenService:Create(New, TweenInfo.new(0.08, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+			Size = UDim2.new(originalSize.X.Scale * 0.9, originalSize.X.Offset * 0.9, originalSize.Y.Scale * 0.9, originalSize.Y.Offset * 0.9)
+		})
+		local restore = TweenService:Create(New, TweenInfo.new(0.08, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+			Size = originalSize
+		})
+
+		clickTween = shrink
+		restoreTween = restore
+
 		shrink:Play()
-		shrink.Completed:Wait()
-		restore:Play()
+		shrink.Completed:Connect(function()
+			restore:Play()
+		end)
 	end
 
 	if args[1] then
