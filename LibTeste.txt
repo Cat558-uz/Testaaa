@@ -1237,28 +1237,33 @@ AddEle("Button", function(parent, props, ...)
 		New.BackgroundTransparency = 0
 	end)
 
-	local clickTween -- referencia para tween ativo
-	local restoreTween
+	local originalSize = New.Size -- salva o tamanho original do botão
+	local activeTweenShrink
+	local activeTweenRestore
 
 	-- Função para animação de clique
 	local function ClickAnimation()
-		if clickTween then clickTween:Cancel() end
-		if restoreTween then restoreTween:Cancel() end
+		-- cancela qualquer tween ativo
+		if activeTweenShrink then activeTweenShrink:Cancel() end
+		if activeTweenRestore then activeTweenRestore:Cancel() end
 
-		local originalSize = New.Size
-		local shrink = TweenService:Create(New, TweenInfo.new(0.08, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
-			Size = UDim2.new(originalSize.X.Scale * 0.9, originalSize.X.Offset * 0.9, originalSize.Y.Scale * 0.9, originalSize.Y.Offset * 0.9)
+		-- resetar tamanho para o original
+		New.Size = originalSize
+
+		-- cria tween para encolher
+		activeTweenShrink = TweenService:Create(New, TweenInfo.new(0.08, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+			Size = UDim2.new(originalSize.X.Scale * 0.9, originalSize.X.Offset * 0.9,
+							  originalSize.Y.Scale * 0.9, originalSize.Y.Offset * 0.9)
 		})
-		local restore = TweenService:Create(New, TweenInfo.new(0.08, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+
+		-- cria tween para restaurar
+		activeTweenRestore = TweenService:Create(New, TweenInfo.new(0.08, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
 			Size = originalSize
 		})
 
-		clickTween = shrink
-		restoreTween = restore
-
-		shrink:Play()
-		shrink.Completed:Connect(function()
-			restore:Play()
+		activeTweenShrink:Play()
+		activeTweenShrink.Completed:Connect(function()
+			activeTweenRestore:Play()
 		end)
 	end
 
