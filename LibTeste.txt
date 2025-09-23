@@ -1279,6 +1279,78 @@ AddEle("Button", function(parent, props, ...)
 	return New
 end)
 
+-- evento secreto por nome abaixo Test
+
+AddEle("Button", function(parent, props, ...)
+	local args = {...}
+	local New = InsertTheme(SetProps(Create("TextButton", parent, {
+		Text = "",
+		Size = UDim2.fromScale(1, 1),
+		BackgroundColor3 = Theme["Color Hub 2"],
+		AutoButtonColor = false
+	}), props), "Frame")
+	
+	New.MouseEnter:Connect(function()
+		New.BackgroundTransparency = 0.4
+	end)
+	New.MouseLeave:Connect(function()
+		New.BackgroundTransparency = 0
+	end)
+
+	local originalSize = New.Size
+	local activeTweenShrink
+	local activeTweenRestore
+	local activeTweenFly
+
+	local function ClickAnimation()
+		if activeTweenShrink then activeTweenShrink:Cancel() end
+		if activeTweenRestore then activeTweenRestore:Cancel() end
+		New.Size = originalSize
+
+		activeTweenShrink = TweenService:Create(New, TweenInfo.new(0.08, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+			Size = UDim2.new(originalSize.X.Scale * 0.9, originalSize.X.Offset * 0.9,
+							  originalSize.Y.Scale * 0.9, originalSize.Y.Offset * 0.9)
+		})
+
+		activeTweenRestore = TweenService:Create(New, TweenInfo.new(0.08, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+			Size = originalSize
+		})
+
+		activeTweenShrink:Play()
+		activeTweenShrink.Completed:Connect(function()
+			activeTweenRestore:Play()
+		end)
+	end
+
+	local function FlyAway()
+		if activeTweenFly then activeTweenFly:Cancel() end
+		-- movimenta o botão para uma posição aleatória na tela
+		local randomX = math.random(0, parent.AbsoluteSize.X - New.AbsoluteSize.X)
+		local randomY = math.random(0, parent.AbsoluteSize.Y - New.AbsoluteSize.Y)
+		activeTweenFly = TweenService:Create(New, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+			Position = UDim2.new(0, randomX, 0, randomY)
+		})
+		activeTweenFly:Play()
+	end
+
+	-- Se for o botão especial "KarkeKuZ", aplica efeito de voo
+	if props.Name == "KarkeKuZ" then
+		New.MouseEnter:Connect(FlyAway)
+		New.Activated:Connect(FlyAway)
+	else
+		if args[1] then
+			New.Activated:Connect(function()
+				ClickAnimation()
+				args[1]()
+			end)
+		else
+			New.Activated:Connect(ClickAnimation)
+		end
+	end
+
+	return New
+end)
+
 AddEle("Gradient", function(parent, props, ...)
 	local args = {...}
 	local New = InsertTheme(SetProps(Create("UIGradient", parent, {
