@@ -18,7 +18,7 @@ local redzlib = {
 			}),
 			["Color Hub 2"] = Color3.fromRGB(30, 30, 30),
 			["Color Stroke"] = Color3.fromRGB(40, 40, 40),
-			["Color Theme"] = Color3.fromRGB(5, 250, 250),
+			["Color Theme"] = Color3.fromRGB(88, 101, 242),
 			["Color Text"] = Color3.fromRGB(243, 243, 243),
 			["Color Dark Text"] = Color3.fromRGB(180, 180, 180)
 		},
@@ -51,8 +51,8 @@ local redzlib = {
 		Version = "1.1.0"
 	},
 	Save = {
-		UISize = {440, 380},
-		TabSize = 150,
+		UISize = {550, 380},
+		TabSize = 160,
 		Theme = "Darker"
 	},
 	Settings = {},
@@ -1219,8 +1219,6 @@ AddEle("Stroke", function(parent, props, ...)
 	return New
 end)
 
-local TweenService = game:GetService("TweenService")
-
 AddEle("Button", function(parent, props, ...)
 	local args = {...}
 	local New = InsertTheme(SetProps(Create("TextButton", parent, {
@@ -1236,118 +1234,9 @@ AddEle("Button", function(parent, props, ...)
 	New.MouseLeave:Connect(function()
 		New.BackgroundTransparency = 0
 	end)
-
-	local originalSize = New.Size -- salva o tamanho original do botão
-	local activeTweenShrink
-	local activeTweenRestore
-
-	-- Função para animação de clique
-	local function ClickAnimation()
-		-- cancela qualquer tween ativo
-		if activeTweenShrink then activeTweenShrink:Cancel() end
-		if activeTweenRestore then activeTweenRestore:Cancel() end
-
-		-- resetar tamanho para o original
-		New.Size = originalSize
-
-		-- cria tween para encolher
-		activeTweenShrink = TweenService:Create(New, TweenInfo.new(0.08, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
-			Size = UDim2.new(originalSize.X.Scale * 0.9, originalSize.X.Offset * 0.9,
-							  originalSize.Y.Scale * 0.9, originalSize.Y.Offset * 0.9)
-		})
-
-		-- cria tween para restaurar
-		activeTweenRestore = TweenService:Create(New, TweenInfo.new(0.08, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
-			Size = originalSize
-		})
-
-		activeTweenShrink:Play()
-		activeTweenShrink.Completed:Connect(function()
-			activeTweenRestore:Play()
-		end)
-	end
-
 	if args[1] then
-		New.Activated:Connect(function()
-			ClickAnimation()
-			args[1]() -- executa a função original do botão
-		end)
-	else
-		New.Activated:Connect(ClickAnimation)
+		New.Activated:Connect(args[1])
 	end
-
-	return New
-end)
-
--- evento secreto por nome abaixo Test
-
-AddEle("Button", function(parent, props, ...)
-	local args = {...}
-	local New = InsertTheme(SetProps(Create("TextButton", parent, {
-		Text = "",
-		Size = UDim2.fromScale(1, 1),
-		BackgroundColor3 = Theme["Color Hub 2"],
-		AutoButtonColor = false
-	}), props), "Frame")
-	
-	New.MouseEnter:Connect(function()
-		New.BackgroundTransparency = 0.4
-	end)
-	New.MouseLeave:Connect(function()
-		New.BackgroundTransparency = 0
-	end)
-
-	local originalSize = New.Size
-	local activeTweenShrink
-	local activeTweenRestore
-	local activeTweenFly
-
-	local function ClickAnimation()
-		if activeTweenShrink then activeTweenShrink:Cancel() end
-		if activeTweenRestore then activeTweenRestore:Cancel() end
-		New.Size = originalSize
-
-		activeTweenShrink = TweenService:Create(New, TweenInfo.new(0.08, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
-			Size = UDim2.new(originalSize.X.Scale * 0.9, originalSize.X.Offset * 0.9,
-							  originalSize.Y.Scale * 0.9, originalSize.Y.Offset * 0.9)
-		})
-
-		activeTweenRestore = TweenService:Create(New, TweenInfo.new(0.08, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
-			Size = originalSize
-		})
-
-		activeTweenShrink:Play()
-		activeTweenShrink.Completed:Connect(function()
-			activeTweenRestore:Play()
-		end)
-	end
-
-	local function FlyAway()
-		if activeTweenFly then activeTweenFly:Cancel() end
-		-- movimenta o botão para uma posição aleatória na tela
-		local randomX = math.random(0, parent.AbsoluteSize.X - New.AbsoluteSize.X)
-		local randomY = math.random(0, parent.AbsoluteSize.Y - New.AbsoluteSize.Y)
-		activeTweenFly = TweenService:Create(New, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
-			Position = UDim2.new(0, randomX, 0, randomY)
-		})
-		activeTweenFly:Play()
-	end
-
-	-- Se for o botão especial "KarkeKuZ", aplica efeito de voo
-	if props.Name == "KarkeKuZ" then
-		New.MouseEnter:Connect(FlyAway)
-		New.Activated:Connect(FlyAway)
-	else
-		if args[1] then
-			New.Activated:Connect(function()
-				ClickAnimation()
-				args[1]()
-			end)
-		else
-			New.Activated:Connect(ClickAnimation)
-		end
-	end
-
 	return New
 end)
 
@@ -1691,13 +1580,13 @@ function redzlib:MakeWindow(Configs)
 	local Window, FirstTab = {}, false
 	function Window:CloseBtn()
 		local Dialog = Window:Dialog({
-			Title = "fechar Hub",
-			Text = "você quer fechar este hub?",
+			Title = "Close",
+			Text = "You Want Close Ui?",
 			Options = {
-				{"Sim", function()
+				{"Confirm", function()
 					ScreenGui:Destroy()
 				end},
-				{"Não"}
+				{"Cancel"}
 			}
 		})
 	end
@@ -1727,7 +1616,7 @@ function redzlib:MakeWindow(Configs)
 	end
 	function Window:AddMinimizeButton(Configs)
 		local Button = MakeDrag(Create("ImageButton", ScreenGui, {
-			Size = UDim2.fromOffset(45, 45),
+			Size = UDim2.fromOffset(35, 35),
 			Position = UDim2.fromScale(0.15, 0.15),
 			BackgroundTransparency = 1,
 			BackgroundColor3 = Theme["Color Hub 2"],
@@ -2055,41 +1944,65 @@ function redzlib:MakeWindow(Configs)
 			end
 			return Paragraph
 		end
-		function Tab:AddButton(Configs)
-			local BName = Configs[1] or Configs.Name or Configs.Title or "Button!"
-			local BDescription = Configs.Desc or Configs.Description or ""
-			local Callback = Funcs:GetCallback(Configs, 2)
-			
-			local FButton, LabelFunc = ButtonFrame(Container, BName, BDescription, UDim2.new(1, -20))
-			
-			local ButtonIcon = Create("ImageLabel", FButton, {
-				Size = UDim2.new(0, 14, 0, 14),
-				Position = UDim2.new(1, -10, 0.5),
-				AnchorPoint = Vector2.new(1, 0.5),
-				BackgroundTransparency = 1,
-				Image = "rbxassetid://10709791437"
-			})
-			
-			FButton.Activated:Connect(function()
-				Funcs:FireCallback(Callback)
-			end)
-			
-			local Button = {}
-			function Button:Visible(...) Funcs:ToggleVisible(FButton, ...) end
-			function Button:Destroy() FButton:Destroy() end
-			function Button:Callback(...) Funcs:InsertCallback(Callback, ...) end
-			function Button:Set(Val1, Val2)
-				if type(Val1) == "string" and type(Val2) == "string" then
-					LabelFunc:SetTitle(Val1)
-					LabelFunc:SetDesc(Val2)
-				elseif type(Val1) == "string" then
-					LabelFunc:SetTitle(Val1)
-				elseif type(Val1) == "function" then
-					Callback = Val1
-				end
-			end
-			return Button
-		end
+		local TweenService = game:GetService("TweenService")
+
+AddEle("Button", function(parent, props, ...)
+	local args = {...}
+	local New = InsertTheme(SetProps(Create("TextButton", parent, {
+		Text = "",
+		Size = UDim2.fromScale(1, 1),
+		BackgroundColor3 = Theme["Color Hub 2"],
+		AutoButtonColor = false
+	}), props), "Frame")
+	
+	New.MouseEnter:Connect(function()
+		New.BackgroundTransparency = 0.4
+	end)
+	New.MouseLeave:Connect(function()
+		New.BackgroundTransparency = 0
+	end)
+
+	local originalSize = New.Size -- salva o tamanho original do botão
+	local activeTweenShrink
+	local activeTweenRestore
+
+	-- Função para animação de clique
+	local function ClickAnimation()
+		-- cancela qualquer tween ativo
+		if activeTweenShrink then activeTweenShrink:Cancel() end
+		if activeTweenRestore then activeTweenRestore:Cancel() end
+
+		-- resetar tamanho para o original
+		New.Size = originalSize
+
+		-- cria tween para encolher
+		activeTweenShrink = TweenService:Create(New, TweenInfo.new(0.08, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+			Size = UDim2.new(originalSize.X.Scale * 0.9, originalSize.X.Offset * 0.9,
+							  originalSize.Y.Scale * 0.9, originalSize.Y.Offset * 0.9)
+		})
+
+		-- cria tween para restaurar
+		activeTweenRestore = TweenService:Create(New, TweenInfo.new(0.08, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+			Size = originalSize
+		})
+
+		activeTweenShrink:Play()
+		activeTweenShrink.Completed:Connect(function()
+			activeTweenRestore:Play()
+		end)
+	end
+
+	if args[1] then
+		New.Activated:Connect(function()
+			ClickAnimation()
+			args[1]() -- executa a função original do botão
+		end)
+	else
+		New.Activated:Connect(ClickAnimation)
+	end
+
+	return New
+end)
 		function Tab:AddToggle(Configs)
 			local TName = Configs[1] or Configs.Name or Configs.Title or "Toggle"
 			local TDesc = Configs.Desc or Configs.Description or ""
@@ -2788,12 +2701,12 @@ function redzlib:MakeWindow(Configs)
 				
 				ClickDelay = true
 				SetProps(JoinButton, {
-					Text = "servidor Copiado",
+					Text = "Copied to Clipboard",
 					BackgroundColor3 = Color3.fromRGB(100, 100, 100),
 					TextColor3 = Color3.fromRGB(150, 150, 150)
 				})task.wait(5)
 				SetProps(JoinButton, {
-					Text = "Entrar",
+					Text = "Join",
 					BackgroundColor3 = Color3.fromRGB(50, 150, 50),
 					TextColor3 = Color3.fromRGB(220, 220, 220)
 				})ClickDelay = false
