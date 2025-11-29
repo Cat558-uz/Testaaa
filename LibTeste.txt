@@ -16,9 +16,9 @@ local redzlib = {
 				ColorSequenceKeypoint.new(0.50, Color3.fromRGB(80, 10, 10)),
 				ColorSequenceKeypoint.new(1.00, Color3.fromRGB(80, 10, 10))
 			}),
-			["Color Hub 2"] = Color3.fromRGB(80, 10, 10),
+			["Color Hub 2"] = Color3.fromRGB(50,0,0),
 			["Color Stroke"] = Color3.fromRGB(40, 40, 40),
-			["Color Theme"] = Color3.fromRGB(5, 250, 250),
+			["Color Theme"] = Color3.fromRGB(50,0,0),
 			["Color Text"] = Color3.fromRGB(243, 243, 243),
 			["Color Dark Text"] = Color3.fromRGB(180, 180, 180)
 		},
@@ -51,7 +51,7 @@ local redzlib = {
 		Version = "1.1.0"
 	},
 	Save = {
-		UISize = {440, 380},
+		UISize = {344, 280},
 		TabSize = 150,
 		Theme = "Darker"
 	},
@@ -2813,3 +2813,4 @@ function redzlib:MakeWindow(Configs)
 end
 
 return redzlib
+
