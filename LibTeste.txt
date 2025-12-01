@@ -2573,60 +2573,82 @@ function redzlib:MakeWindow(Configs)
 			end
 			
 			                            -- script create BY ghost
+-- script create BY ghost
 function Tab:AddProfileFrame(Configs)
 	local Players = game:GetService("Players")
 	local LocalPlayer = Players.LocalPlayer
 
-	local FrameHolder = Create("Frame", Container, {
+	-- Frame principal
+	local ProfileHolder = Create("Frame", Container, {
 		Name = "ProfileFrame",
-		Size = UDim2.new(1, 0, 0, 70),
+		Size = UDim2.new(1, 0, 0, 80),
 		BackgroundTransparency = 1
 	})
 
-	local InnerFrame = InsertTheme(Create("Frame", FrameHolder, {
-		Size = UDim2.new(1, 0, 0, 65),
+	-- Moldura com sombra e borda
+	local FrameHolder = InsertTheme(Create("Frame", ProfileHolder, {
+		Size = UDim2.new(1, 0, 0, 75),
 		AnchorPoint = Vector2.new(0, 1),
 		Position = UDim2.new(0, 0, 1, 0),
 		BackgroundColor3 = Theme["Color Hub 2"]
-	}), "Frame")Make("Corner", InnerFrame)
+	}), "Frame")
+	Make("Corner", FrameHolder, UDim.new(0, 10))
+	Make("Stroke", FrameHolder)
 
+	-- Sombra preta leve
+	local Shadow = Create("ImageLabel", FrameHolder, {
+		AnchorPoint = Vector2.new(0.5, 0.5),
+		Position = UDim2.new(0.5, 0, 0.5, 5),
+		Size = UDim2.new(1, 20, 1, 20),
+		Image = "rbxassetid://1316045217",
+		ImageColor3 = Color3.fromRGB(0, 0, 0),
+		ImageTransparency = 0.85,
+		BackgroundTransparency = 1,
+		ZIndex = 0
+	})
+
+	-- Imagem do perfil (Headshot)
 	local Headshot = string.format(
 		"https://www.roblox.com/headshot-thumbnail/image?userId=%s&width=180&height=180&format=png",
 		LocalPlayer.UserId
 	)
 
-	local ImageLabel = Create("ImageLabel", InnerFrame, {
-		Size = UDim2.new(0, 55, 0, 55),
-		Position = UDim2.new(0, 10, 0, 5),
+	local Avatar = Create("ImageLabel", FrameHolder, {
+		Size = UDim2.new(0, 60, 0, 60),
+		Position = UDim2.new(0, 10, 0, 7),
 		Image = Headshot,
 		BackgroundTransparency = 1
-	})Make("Corner", ImageLabel, UDim.new(1, 0))Make("Stroke", ImageLabel)
+	})
+	Make("Corner", Avatar, UDim.new(1, 0))
+	Make("Stroke", Avatar)
 
-	local NameLabel = InsertTheme(Create("TextLabel", InnerFrame, {
-		Size = UDim2.new(1, -75, 0, 20),
-		Position = UDim2.new(0, 75, 0, 10),
-		Font = Enum.Font.GothamBold,
+	-- Nome e DisplayName
+	local NameLabel = InsertTheme(Create("TextLabel", FrameHolder, {
+		Size = UDim2.new(1, -80, 0, 20),
+		Position = UDim2.new(0, 80, 0, 10),
+		Text = LocalPlayer.DisplayName .. " (@" .. LocalPlayer.Name .. ")",
 		TextColor3 = Theme["Color Text"],
+		Font = Enum.Font.GothamBold,
 		TextXAlignment = "Left",
 		BackgroundTransparency = 1,
-		TextSize = 12,
-		Text = LocalPlayer.DisplayName .. " (@" .. LocalPlayer.Name .. ")"
+		TextSize = 12
 	}), "Text")
 
-	local IdLabel = InsertTheme(Create("TextLabel", InnerFrame, {
-		Size = UDim2.new(1, -75, 0, 14),
-		Position = UDim2.new(0, 75, 0, 30),
-		Font = Enum.Font.Gotham,
+	-- ID do jogador
+	local IdLabel = InsertTheme(Create("TextLabel", FrameHolder, {
+		Size = UDim2.new(1, -80, 0, 15),
+		Position = UDim2.new(0, 80, 0, 30),
+		Text = "UserId: " .. LocalPlayer.UserId,
 		TextColor3 = Theme["Color Dark Text"],
+		Font = Enum.Font.Gotham,
 		TextXAlignment = "Left",
 		BackgroundTransparency = 1,
-		TextSize = 10,
-		Text = "UserId: " .. LocalPlayer.UserId
+		TextSize = 10
 	}), "DarkText")
 
 	local Profile = {}
-	function Profile:Destroy() FrameHolder:Destroy() end
-	function Profile:Visible(...) Funcs:ToggleVisible(FrameHolder, ...) end
+	function Profile:Destroy() ProfileHolder:Destroy() end
+	function Profile:Visible(...) Funcs:ToggleVisible(ProfileHolder, ...) end
 	return Profile
 end
 			
