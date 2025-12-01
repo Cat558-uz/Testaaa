@@ -17,7 +17,7 @@ local redzlib = {
 				ColorSequenceKeypoint.new(1.00, Color3.fromRGB(80, 15, 10))
 			}),
 			["Color Hub 2"] = Color3.fromRGB(80, 10, 10),
-			["Color Stroke"] = Color3.fromRGB(10, 10, 10),
+			["Color Stroke"] = Color3.fromRGB(40, 40, 40),
 			["Color Theme"] = Color3.fromRGB(5, 250, 250),
 			["Color Text"] = Color3.fromRGB(243, 243, 243),
 			["Color Dark Text"] = Color3.fromRGB(180, 180, 180)
@@ -129,6 +129,7 @@ local redzlib = {
 			["arrowupcircle"] = "rbxassetid://10709768432",
 			["arrowupdown"] = "rbxassetid://10709768538",
 			["arrowupleft"] = "rbxassetid://10709768661",
+			["arrowupright"] = "rbxassetid://10709768787",
 			["asterisk"] = "rbxassetid://10709769095",
 			["atsign"] = "rbxassetid://10709769286",
 			["award"] = "rbxassetid://10709769406",
@@ -973,13 +974,13 @@ local Funcs = {} do
 		Obj.Visible = Bool ~= nil and Bool or Obj.Visible
 	end
 	
-	function Funcs:ToggleParent(Obj, Parent, Bool)
-	if Bool ~= nil then
-		Obj.Parent = Bool and Parent or nil
-	else
-		Obj.Parent = Obj.Parent and nil or Parent
+	function Funcs:ToggleParent(Obj, Parent)
+		if Bool ~= nil then
+			Obj.Parent = Bool
+		else
+			Obj.Parent = not Obj.Parent and Parent
+		end
 	end
-end
 	
 	function Funcs:GetConnectionFunctions(ConnectedFuncs, func)
 		local Connected = { Function = func, Connected = true }
@@ -1727,7 +1728,7 @@ function redzlib:MakeWindow(Configs)
 	function Window:AddMinimizeButton(Configs)
 		local Button = MakeDrag(Create("ImageButton", ScreenGui, {
 			Size = UDim2.fromOffset(45, 45),
-			Position = UDim2.fromScale(0.15, 0.19)
+			Position = UDim2.fromScale(0.15, 0.15),
 			BackgroundTransparency = 1,
 			BackgroundColor3 = Theme["Color Hub 2"],
 			AutoButtonColor = false
@@ -2066,7 +2067,7 @@ function redzlib:MakeWindow(Configs)
 				Position = UDim2.new(1, -10, 0.5),
 				AnchorPoint = Vector2.new(1, 0.5),
 				BackgroundTransparency = 1,
-				Image = "rbxassetid://10734951847"
+				Image = "rbxassetid://10709791437"
 			})
 			
 			FButton.Activated:Connect(function()
