@@ -1291,7 +1291,7 @@ AddEle("Button", function(parent, props, ...)
 
 	-- Criação da borda com gradiente vermelho e preto
 	local border = Instance.new("UIStroke")
-	border.Thickness = 0.02
+	border.Thickness = 0.04
 	border.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
 	border.Parent = New
 
@@ -1300,7 +1300,7 @@ AddEle("Button", function(parent, props, ...)
 		ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 0, 0)), -- vermelho
 		ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 0, 0))    -- preto
 	})
-	gradient.Rotation = 9
+	gradient.Rotation = 90
 	gradient.Parent = border
 
 	New.MouseEnter:Connect(function()
