@@ -1219,66 +1219,6 @@ AddEle("Stroke", function(parent, props, ...)
 	return New
 end)
 
-local TweenService = game:GetService("TweenService")
-
-AddEle("Button", function(parent, props, ...)
-	local args = {...}
-	local New = InsertTheme(SetProps(Create("TextButton", parent, {
-		Text = "",
-		Size = UDim2.fromScale(1, 1),
-		BackgroundColor3 = Theme["Color Hub 2"],
-		AutoButtonColor = false
-	}), props), "Frame")
-	
-	New.MouseEnter:Connect(function()
-		New.BackgroundTransparency = 0.4
-	end)
-	New.MouseLeave:Connect(function()
-		New.BackgroundTransparency = 0
-	end)
-
-	local originalSize = New.Size -- salva o tamanho original do botão
-	local activeTweenShrink
-	local activeTweenRestore
-
-	-- Função para animação de clique
-	local function ClickAnimation()
-		-- cancela qualquer tween ativo
-		if activeTweenShrink then activeTweenShrink:Cancel() end
-		if activeTweenRestore then activeTweenRestore:Cancel() end
-
-		-- resetar tamanho para o original
-		New.Size = originalSize
-
-		-- cria tween para encolher
-		activeTweenShrink = TweenService:Create(New, TweenInfo.new(0.08, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
-			Size = UDim2.new(originalSize.X.Scale * 0.9, originalSize.X.Offset * 0.9,
-							  originalSize.Y.Scale * 0.9, originalSize.Y.Offset * 0.9)
-		})
-
-		-- cria tween para restaurar
-		activeTweenRestore = TweenService:Create(New, TweenInfo.new(0.08, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
-			Size = originalSize
-		})
-
-		activeTweenShrink:Play()
-		activeTweenShrink.Completed:Connect(function()
-			activeTweenRestore:Play()
-		end)
-	end
-
-	if args[1] then
-		New.Activated:Connect(function()
-			ClickAnimation()
-			args[1]() -- executa a função original do botão
-		end)
-	else
-		New.Activated:Connect(ClickAnimation)
-	end
-
-	return New
-end)
-
 -- script create BY ghost
 AddEle("Button", function(parent, props, ...)
 	local args = {...}
@@ -1291,7 +1231,7 @@ AddEle("Button", function(parent, props, ...)
 
 	-- Criação da borda com gradiente vermelho e preto
 	local border = Instance.new("UIStroke")
-	border.Thickness = 0.04
+	border.Thickness = 0.07
 	border.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
 	border.Parent = New
 
